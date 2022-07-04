@@ -38,8 +38,19 @@ app.get('/api/notes', (request, response) => {
 })
 
 app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.paramas.id)
-  notes = notes.filter(note => note.id === id)
+  const id = Number(request.params.id)
+  const note = notes.find(note => note.id === id)
+
+  if (note) {
+    response.json(note)
+  } else {
+    response.status(404).end()
+  }
+})
+
+app.delete('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  notes = notes.filter(note => note.id !== id)
   response.status(204).end()
 })
 
@@ -58,7 +69,7 @@ app.post('/api/notes', (request, response) => {
   const newNote = {
     id: maxId + 1,
     content: note.content,
-    important: typeof note.important === 'undefined' ? note.important : false,
+    important: typeof note.important !== 'undefined' ? note.important : false,
     date: new Date().toISOString()
   }
 
